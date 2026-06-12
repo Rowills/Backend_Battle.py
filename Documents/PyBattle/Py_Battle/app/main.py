@@ -2,7 +2,7 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 from fastapi.middleware.cors import CORSMiddleware
 from app.db.base import Base
 from app.db.session import engine
-from app.routers import auth, battle, stats
+from app.routers import auth, battle, stats, comments
 from app.websockets.battle_ws import manager
 
 Base.metadata.create_all(bind=engine)
@@ -29,6 +29,7 @@ app.add_middleware(
 app.include_router(auth.router)
 app.include_router(battle.router)
 app.include_router(stats.router)
+app.include_router(comments.router)
 
 @app.websocket("/ws/battle/{battle_id}/{player_id}")
 async def websocket_endpoint(websocket: WebSocket, battle_id: int, player_id: str):
