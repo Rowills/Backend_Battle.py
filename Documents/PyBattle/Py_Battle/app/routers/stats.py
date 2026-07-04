@@ -84,3 +84,15 @@ def record_result(battle_id: int, winner_id: int, db: Session = Depends(get_db))
     battle.status = "completed"
     db.commit()
     return {"message": "Result recorded"}
+
+
+@router.post("/battle/{battle_id}/bot-won")
+def record_bot_win(battle_id: int, db: Session = Depends(get_db)):
+    """Mark a battle as completed with no winner (bot won) so the user's loss is counted."""
+    battle = db.query(Battle).filter(Battle.id == battle_id).first()
+    if not battle:
+        raise HTTPException(status_code=404, detail="Battle not found")
+    battle.winner_id = None
+    battle.status = "completed"
+    db.commit()
+    return {"message": "Bot win recorded"}
